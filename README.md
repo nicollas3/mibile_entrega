@@ -1,5 +1,7 @@
 # Brasa — comida, pessoas e boas conexões
 
+**Windows / Visual Studio:** siga [este roteiro para abrir a solução, executar no notebook e gerar o APK](docs/VISUAL-STUDIO-WINDOWS.md). Inclui scripts PowerShell para configuração e compilação, emulador e celular físico.
+
 Plataforma original de delivery em C#/.NET, com API, PostgreSQL, painéis Blazor e aplicativo MAUI para cliente e entregador. A identidade visual é própria. O projeto funciona em **desenvolvimento**, com pagamentos fictícios claramente identificados. Nenhuma cobrança ou repasse bancário é realizado.
 
 ## Começar em cinco minutos

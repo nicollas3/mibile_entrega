@@ -7,3 +7,4 @@
 *.user
 *.log
 artifacts/
+Directory.Build.local.props

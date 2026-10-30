@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+ <PropertyGroup><UserSecretsId>brasa-local-development-api</UserSecretsId></PropertyGroup>
  <ItemGroup>
   <ProjectReference Include="../Brasa.Infrastructure/Brasa.Infrastructure.csproj" />
   <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
