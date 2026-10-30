@@ -1,0 +1,15 @@
+@page "/explorar"
+@inherits PageBase
+<PageTitle>Explorar sabores · Brasa</PageTitle>
+<p class="eyebrow">SEU PRÓXIMO FAVORITO</p><h1>O que combina com a sua fome?</h1><p class="lead">Cozinhas com personalidade. Descubra um novo sabor hoje.</p>
+<form class="filters card" @onsubmit="Search" @onsubmit:preventDefault><label>Restaurante ou prato<input @bind="query" placeholder="O que vamos pedir hoje?"/></label><label>Categoria<select @bind="category"><option value="">Todas</option>@foreach(var c in categories){<option>@c</option>}</select></label><label>Taxa máxima (R$)<input type="number" min="0" step="0.01" @bind="fee"/></label><label>Tempo máximo (min)<input type="number" min="5" @bind="minutes"/></label><label>Prato até (R$)<input type="number" min="0" @bind="price"/></label><label>Avaliação mínima<select @bind="rating"><option value="">Qualquer</option><option value="4">4 estrelas</option><option value="3">3 estrelas</option></select></label><label class="inline"><input type="checkbox" @bind="open"/> Apenas abertas</label><button disabled="@Busy">Buscar</button></form>
+<Feedback Error="@Error" Busy="@Busy"/>
+<section class="grid three">@foreach(var r in result?.Items??[]){<a class="card restaurant-card" href="@($"/cozinha/{r.Id}")"><div class="food-art" aria-hidden="true">@(r.Category=="Vegetariana"?"◒":"◉")</div><div class="card-body"><p class="eyebrow">@r.Category</p><h2>@r.Name</h2><p>@r.Description</p><div class="meta"><span>@(r.Rating?.ToString("F1")??"Novo") ★</span><span>~@r.PreparationMinutes min</span><span>@Money(r.DeliveryFee) entrega</span></div><span class="badge">@Status(r.Status)</span></div></a>}</section>
+@if(result?.Total==0){<div class="empty">Nenhuma cozinha encontrada. Ajuste os filtros e tente novamente.</div>}
+@if(result!=null){<div class="actions"><button class="quiet" disabled="@(page<=1||Busy)" @onclick="Previous">Anterior</button><span>Página @(page) · @result.Total cozinhas</span><button class="quiet" disabled="@(page*12>=result.Total||Busy)" @onclick="Next">Próxima</button></div>}
+@code{
+ List<string> categories=[];string query="",category="",rating="";decimal? fee,price;int? minutes;bool open;int page=1;PageDto<RestaurantDto>? result;
+ protected override async Task OnInitializedAsync()=>await Load();
+ async Task Load()=>await Run(async()=>{categories=await Api.Get<List<string>>("api/categories");result=await Api.Get<PageDto<RestaurantDto>>($"api/restaurants?q={Uri.EscapeDataString(query)}&category={Uri.EscapeDataString(category)}&open={open}&maxFee={fee?.ToString(System.Globalization.CultureInfo.InvariantCulture)}&maxMinutes={minutes}&maxPrice={price?.ToString(System.Globalization.CultureInfo.InvariantCulture)}&minRating={rating}&page={page}&pageSize=12");});
+ async Task Search(){page=1;await Load();}async Task Next(){page++;await Load();}async Task Previous(){page--;await Load();}
+}

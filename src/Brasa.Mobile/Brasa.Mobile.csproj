@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup>
+  <TargetFramework></TargetFramework>
+  <TargetFrameworks>net10.0-android</TargetFrameworks>
+  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">net10.0-android;net10.0-ios</TargetFrameworks>
+  <OutputType>Exe</OutputType><UseMaui>true</UseMaui><SingleProject>true</SingleProject>
+  <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android-arm64;android-x64</RuntimeIdentifiers>
+  <ApplicationTitle>Brasa</ApplicationTitle><ApplicationId>br.com.brasa.delivery</ApplicationId><ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion><ApplicationVersion>1</ApplicationVersion>
+  <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+  <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+  <AndroidManifestPlaceholders>usesCleartextTraffic=false</AndroidManifestPlaceholders>
+  <AndroidManifestPlaceholders Condition="'$(Configuration)' == 'Debug'">usesCleartextTraffic=true</AndroidManifestPlaceholders>
+  <BrasaApiUrl Condition="'$(BrasaApiUrl)' == '' and '$(Configuration)' == 'Debug' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">http://10.0.2.2:5070</BrasaApiUrl>
+  <BrasaApiUrl Condition="'$(BrasaApiUrl)' == '' and '$(Configuration)' == 'Debug'">http://localhost:5070</BrasaApiUrl>
+ </PropertyGroup>
+ <ItemGroup>
+  <ProjectReference Include="../Brasa.Client/Brasa.Client.csproj" />
+  <PackageReference Include="Microsoft.Maui.Controls" />
+  <AssemblyMetadata Include="BrasaApiUrl" Value="$(BrasaApiUrl)" />
+  <MauiIcon Include="Resources/AppIcon/appicon.svg" Color="#B44420" />
+  <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#F6F5EE" BaseSize="128,128" />
+ </ItemGroup>
+ <Target Name="RequirePublishedApi" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release' and '$(BrasaApiUrl)' == ''"><Error Text="Informe -p:BrasaApiUrl=https://seu-dominio para compilar Release." /></Target>
+</Project>

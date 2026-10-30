@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <ItemGroup>
+  <ProjectReference Include="../Brasa.Domain/Brasa.Domain.csproj" />
+  <ProjectReference Include="../Brasa.Contracts/Brasa.Contracts.csproj" />
+  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+ </ItemGroup>
+</Project>

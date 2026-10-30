@@ -1,0 +1,4 @@
+@if(Busy){<p class="muted" role="status">Carregando…</p>}
+@if(Error!=null){<div class="alert" role="alert">@Error</div>}
+@if(Message!=null){<div class="notice" role="status">@Message</div>}
+@code{[Parameter]public string? Error{get;set;}[Parameter]public string? Message{get;set;}[Parameter]public bool Busy{get;set;}}

@@ -1,0 +1,9 @@
+.git
+**/bin
+**/obj
+**/TestResults
+.env
+**/.local
+artifacts
+tests
+src/Brasa.Mobile

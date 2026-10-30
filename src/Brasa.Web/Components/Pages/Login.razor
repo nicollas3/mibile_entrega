@@ -1,0 +1,18 @@
+@page "/entrar"
+@inherits PageBase
+@inject NavigationManager Nav
+<PageTitle>Entrar · Brasa</PageTitle>
+<div class="auth-card card"><p class="eyebrow">BEM-VINDO À MESA</p><h1>@(register?"Crie sua conta":"Que bom ter você aqui.")</h1><p class="muted">Use sua conta para acompanhar a operação.</p>
+<Feedback Error="@Error" Message="@Message" Busy="@Busy"/>
+<form @onsubmit="Submit" @onsubmit:preventDefault>
+ @if(register){<label>Seu nome<input required maxlength="100" @bind="name" autocomplete="name"/></label>}
+ <label>Email<input type="email" required @bind="email" autocomplete="username"/></label><label>Senha<input type="password" required minlength="12" @bind="password" autocomplete="current-password"/></label>
+ @if(register){<label class="inline"><input type="checkbox" @bind="courier"/> Quero me cadastrar como entregador (sujeito a aprovação).</label>}
+ <button disabled="@Busy" type="submit">@(register?"Criar conta":"Entrar na minha conta")</button>
+</form><div class="actions"><button class="quiet" @onclick="()=>register=!register">@(register?"Já tenho conta":"Criar conta")</button><button class="quiet" @onclick="Forgot">Recuperar senha</button></div>
+<p class="muted small">Contas fictícias: cliente, loja, admin, entregador ou suporte @@brasa.local. Senha local padrão: <code>BrasaLocal!2026</code> (altere em .env).</p></div>
+@code{
+ string email="",password="",name="";bool register,courier;
+ async Task Submit()=>await Run(async()=>{if(register)await Api.Register(new(email,password,name,courier));else await Api.Login(new(email,password));Nav.NavigateTo("/");});
+ async Task Forgot()=>await Run(async()=>{await Api.Post<object>("api/auth/forgot-password",new ForgotRequest(email));Message="Se a conta existir, as instruções serão enviadas. Em desenvolvimento, consulte src/Brasa.Api/.local/mail e a página /recuperar.";});
+}

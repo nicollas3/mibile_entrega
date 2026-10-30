@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <ItemGroup><ProjectReference Include="../Brasa.Contracts/Brasa.Contracts.csproj" /><PackageReference Include="Microsoft.AspNetCore.SignalR.Client" /></ItemGroup>
+</Project>

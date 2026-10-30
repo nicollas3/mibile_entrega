@@ -1,0 +1,7 @@
+@page "/pedidos"
+@inherits PageBase
+<PageTitle>Pedidos · Brasa</PageTitle><p class="eyebrow">CADA PEDIDO TEM UMA HISTÓRIA</p><h1>Da cozinha ao primeiro bocado.</h1><Feedback Error="@Error" Busy="@Busy"/>
+@if(Api.Session==null){<a href="/entrar">Entre para consultar os pedidos.</a>}else{<button class="quiet" disabled="@Busy" @onclick="Load">Atualizar</button>
+<div class="table-wrap card"><table><thead><tr><th>Pedido</th><th>Cozinha</th><th>Data</th><th>Status</th><th>Total</th></tr></thead><tbody>@foreach(var o in result?.Items??[]){<tr><td><a href="@($"/pedido/{o.Id}")">#@o.Id.ToString()[..8]</a></td><td>@o.RestaurantName</td><td>@o.CreatedAt.ToOffset(TimeSpan.FromHours(-3)).ToString("dd/MM/yyyy HH:mm")</td><td><span class="badge">@Status(o.Status)</span></td><td>@Money(o.Prices.Total)</td></tr>}</tbody></table>@if(result?.Total==0){<div class="empty">Nenhum pedido por aqui ainda.</div>}</div>
+<div class="actions"><button class="quiet" disabled="@(page<=1||Busy)" @onclick="Prev">Anterior</button><span>Página @(page)</span><button class="quiet" disabled="@(page*50>=(result?.Total??0)||Busy)" @onclick="Next">Próxima</button></div>}
+@code{PageDto<OrderDto>? result;int page=1;protected override async Task OnInitializedAsync(){if(Api.Session!=null)await Load();}async Task Load()=>await Run(async()=>result=await Api.Get<PageDto<OrderDto>>($"api/orders?page={page}"));async Task Prev(){page--;await Load();}async Task Next(){page++;await Load();}}

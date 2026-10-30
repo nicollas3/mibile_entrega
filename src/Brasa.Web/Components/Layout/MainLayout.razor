@@ -1,0 +1,25 @@
+@inherits LayoutComponentBase
+@inject ApiClient Api
+@inject NavigationManager Nav
+@implements IDisposable
+<div class="shell">
+ <aside><a class="brand" href="/"><span class="brand-icon" aria-hidden="true">b</span>brasa<span class="brand-dot">.</span></a><p class="eyebrow">OPERAÇÃO COM SABOR</p>
+  <nav aria-label="Navegação principal"><NavLink href="/" Match="NavLinkMatch.All">Visão geral</NavLink><NavLink href="/explorar">Explorar sabores</NavLink>
+   @if(Api.Session!=null){<NavLink href="/pedidos">Meus pedidos</NavLink><NavLink href="/restaurante">Meu restaurante</NavLink>
+    @if(Api.Session.User.Roles.Contains("Administrador")){<NavLink href="/admin">Administração</NavLink>}
+    <NavLink href="/suporte">Central de ajuda</NavLink>
+   }
+  </nav><div class="aside-note"><span class="live-dot"></span> Ambiente de demonstração<p>Restaurantes e pagamentos fictícios. Nenhuma cobrança real.</p></div>
+ </aside>
+ <div class="main-wrap"><header><span>Uma boa entrega começa aqui.</span><div>@if(Api.Session==null){<a class="button small" href="/entrar">Entrar</a>}else{<span class="user-pill">@Api.Session.User.Name</span><button class="quiet small" @onclick="SignOut">Sair</button>}</div></header>
+ <main id="conteudo">@if(ready){<ErrorBoundary><ChildContent>@Body</ChildContent><ErrorContent><div role="alert" class="alert">Não foi possível carregar esta página. <a href="/">Voltar ao início</a></div></ErrorContent></ErrorBoundary>}else{<p role="status">Preparando sua sessão…</p>}</main>
+ <footer>brasa · feita para aproximar pessoas e boas cozinhas.</footer></div>
+</div>
+@code {
+ bool ready;
+ protected override void OnInitialized()=>Api.Changed+=Changed;
+ protected override async Task OnAfterRenderAsync(bool firstRender){if(firstRender){await Api.Initialize();ready=true;await InvokeAsync(StateHasChanged);}}
+ void Changed()=>_=InvokeAsync(StateHasChanged);
+ async Task SignOut(){try{await Api.Logout();}finally{Nav.NavigateTo("/entrar");}}
+ public void Dispose()=>Api.Changed-=Changed;
+}

@@ -1,0 +1,5 @@
+@page "/recuperar"
+@inherits PageBase
+<h1>Recuperar acesso</h1><Feedback Error="@Error" Message="@Message" Busy="@Busy"/>
+<form class="card form-grid" @onsubmit="DoReset" @onsubmit:preventDefault><label>Email<input type="email" required @bind="email"/></label><label>Token recebido<input required @bind="token" autocomplete="off"/></label><label>Nova senha<input type="password" required minlength="12" @bind="password" autocomplete="new-password"/></label><button disabled="@Busy">Alterar senha</button></form>
+@code{string email="",token="",password="";async Task DoReset()=>await Run(async()=>{await Api.Post<object>("api/auth/reset-password",new ResetRequest(email,token,password));token="";password="";Message="Senha alterada. Entre novamente.";});}
